@@ -16,12 +16,14 @@ class SessionHandler : TextWebSocketHandler() {
     private val lobbyHandler = LobbyHandler(sessions)
 
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
-        val user = sessions.remove(session)!!
+        val user = sessions[session]!!
         val lobby = user.lobby
 
         if (lobby !== null) {
             lobbyHandler.removeUserFromLobby(user, lobby)
         }
+
+        sessions.remove(session)
     }
 
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
