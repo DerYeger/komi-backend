@@ -38,6 +38,7 @@ class LobbyHandler(private val sessions: HashMap<WebSocketSession, User>) {
             lobby.players.size > 1 -> session.error("Lobby is full")
             else -> {
                 addUserToLobby(user, lobby)
+                session.send(Message(type = "joinedLobby", data = lobby.toJson()))
                 broadcastLobbies()
             }
         }
@@ -52,7 +53,7 @@ class LobbyHandler(private val sessions: HashMap<WebSocketSession, User>) {
             lobby === null -> session.error("Lobby does not exist")
             else -> {
                 removeUserFromLobby(user, lobby)
-                session.send(Message(type = "joinedLobby", data = lobby.toJson()))
+                session.send(Message(type = "leftLobby", data = lobby.toJson()))
                 broadcastLobbies()
             }
         }
